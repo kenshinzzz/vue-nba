@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {Indicator} from 'mint-ui'
+// import {Indicator} from 'mint-ui'
 export {httpResGet}
 
 /**
@@ -8,10 +8,10 @@ export {httpResGet}
  * @returns {Promise}
  */
 function httpResGet (url, param) {
-  Indicator.open({
-    text: '加载中...',
-    spinnerType: 'fading-circle'
-  })
+  // Indicator.open({
+  //   text: '加载中...',
+  //   spinnerType: 'fading-circle'
+  // })
   return new Promise((resolve, reject) => {
     Vue.http.get(url).then((response) => {
       let d = response.data
@@ -19,14 +19,14 @@ function httpResGet (url, param) {
         d = JSON.parse(d)
       }
       resolve(d)
-      Indicator.close()
+      // Indicator.close()
     }, (response) => {
       let msg = response.data
       if (msg === undefined || !msg) {
         msg = '网络连接失败，请重试'
       }
       reject(msg)
-      Indicator.close()
+      // Indicator.close()
     })
   })
 }

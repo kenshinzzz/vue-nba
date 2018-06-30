@@ -2,6 +2,7 @@
 import {GAME} from '../constant'
 
 const state = {
+  firstLoad: false,
   gameDate: '',
   live: [],
   over: [],

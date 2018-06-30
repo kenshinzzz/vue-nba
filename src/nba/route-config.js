@@ -24,18 +24,8 @@ function registerRoutes (...route) {
 }
 
 function nextTo (to, from, next, store) {
-  if (from.path !== '/') {
-    if (from.meta.keepAlive && to.meta.keepAlive !== true) {
-      store.dispatch('setChgKeepAlive', 'nk')
-    } else if (to.meta.keepAlive && from.meta.keepAlive !== true) {
-      store.dispatch('setChgKeepAlive', 'k')
-    } else {
-      store.dispatch('setChgKeepAlive', 'nc')
-    }
-  }
-  Vue.nextTick(function () {
-    next()
-  })
+  // TODO
+  next()
 }
 
 function initRouter (store, routes) {

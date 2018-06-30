@@ -8,16 +8,17 @@ import store from '../store'
  * Get info of game general
  */
 const getGameGeneral = (year, month, date) => {
-  // return (dispatch, getStore) => {
-    // if (getStore().application.navigator === 'gameIndex') {
-  return channel.getGameGeneral(year, month, date)
-    .then(data => {
-      store.dispatch(GAME.INFO, data)
-    })
-    // } else {
-    //   return Promise.resolve()
-    // }
-  // }
+  return new Promise((resolve, reject) => {
+    channel.getGameGeneral(year, month, date)
+      .then(data => {
+        if (data) {
+          store.dispatch(GAME.INFO, data)
+          resolve()
+        } else {
+          reject()
+        }
+      })
+  })
 }
 
 /**
@@ -27,13 +28,9 @@ const getGameGeneral = (year, month, date) => {
  * @return game {Object}
  */
 const getGameDetail = (id, type, year, month, date) => {
-  // return (dispatch, getStore) => {
-  //   if (getStore().application.navigator === 'gameDetail') {
-      /* If the game is finish and have detail data, no need to request again */
   if (type === 'over') {
     const game = store.getters.over.find((g) => { return g.id === id })
     if (game.detail && game.detail.loaded) {
-      // store.dispatch(GAME.DETAIL, game.detail.data)
       return Promise.resolve()
     }
   }
@@ -46,10 +43,6 @@ const getGameDetail = (id, type, year, month, date) => {
       }
       store.dispatch(GAME.DETAIL, d)
     })
-    // } else {
-    //   return Promise.resolve()
-    // }
-  // }
 }
 
 /**

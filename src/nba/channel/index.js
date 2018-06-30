@@ -15,6 +15,8 @@ export default {
         } */
         allGames.gameDate = `${year}-${month}-${date}`
         return allGames
+      }, (data) => {
+        console.log(data)
       })
   },
 
@@ -27,7 +29,9 @@ export default {
   getLeagueStanding (year) {
     const url = address.leagueStanding(year)
     return httpResGet(url)
-      .then(data => producer.leagueStanding(data))
+      .then(data => producer.leagueStanding(data), (data) => {
+        console.log(data)
+      })
   },
 
   getPlayerList () {

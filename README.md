@@ -14,7 +14,7 @@ vue2 + vuex + vue-router + vue-resource
 #### Vue
 1. `$ npm install`
 2. `$ npm run dev`
-
+http://localhost:8081/nba/index.html
 
 ## 运行（React版本）
 ![group](https://cloud.githubusercontent.com/assets/5305874/12059257/dacf1ad0-af92-11e5-920c-ba4818d8dc1d.png)

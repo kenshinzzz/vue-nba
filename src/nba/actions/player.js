@@ -22,7 +22,6 @@ const setSearchRecord = player => {
   if (recent) {
     originData = Object.assign([], recent)
   }
-  /* If recent record has player, return */
   if (originData.find((data, index) => {
     return data.id === player.id
   })) {

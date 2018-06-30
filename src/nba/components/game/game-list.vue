@@ -18,6 +18,7 @@
       <div style="height: 44px;"></div>
 
       <div class="game-list-listView">
+        <game-list-loading v-if="!firstLoad"></game-list-loading>
         <game-panel v-for="game in gameList" :key="game.id" :game="game"></game-panel>
       </div>
     </div>
@@ -31,14 +32,16 @@
  import actions from '../../actions/game'
  import calendar from '../common/calendar'
  import moment from 'moment-timezone'
+ import gameListLoading from './loading/game-list-loading'
 
  export default {
    name: 'game-list',
    components: {
-     calendar, gamePanel
+     calendar, gamePanel, gameListLoading
    },
    data () {
      return {
+       firstLoad: false,
        timeout: null,
        date: [0, 0, 0],
        isToday: false,
@@ -61,7 +64,11 @@
      ...mapGetters(['unstart', 'over', 'live'])
    },
    mounted () {
-     actions.getGameGeneral(this.date[0], this.date[1], this.date[2])
+     actions.getGameGeneral(this.date[0], this.date[1], this.date[2]).then(data => {
+       this.firstLoad = true
+     }, (data) => {
+       this.firstLoad = true
+     })
    },
    beforeUpdate () {
      if (this.live.length > 0) {

@@ -5,8 +5,10 @@ export const routes = {
     {
       name: 'game-index',
       path: '/index',
-      component: (resolve) => require(['../components/game/game-list'], resolve),
-      meta: {keepAlive: true}
+      components: {
+        'main': resolve => require(['../components/game/game-list'], resolve)
+      },
+      meta: {keepAlive: true, tab: 0}
     },
     {
       name: 'game-detail',
@@ -16,8 +18,10 @@ export const routes = {
     {
       name: 'player-index',
       path: '/player-index',
-      component: (resolve) => require(['../components/player/player-index'], resolve),
-      meta: {keepAlive: true}
+      components: {
+        'main': resolve => require(['../components/player/player-index'], resolve)
+      },
+      meta: {keepAlive: true, tab: 1}
     },
     {
       name: 'player-detail',
@@ -27,8 +31,10 @@ export const routes = {
     {
       name: 'team-list',
       path: '/team-list',
-      component: (resolve) => require(['../components/team/team-list'], resolve),
-      meta: {keepAlive: true}
+      components: {
+        'main': resolve => require(['../components/team/team-list'], resolve)
+      },
+      meta: {keepAlive: true, tab: 2}
     },
     {
       name: 'team-detail',

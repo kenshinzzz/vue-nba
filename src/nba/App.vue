@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <div>
-      <transition name="fade" mode="out-in">
+      <div class="app-main">
         <keep-alive>
-          <router-view v-if="$route.meta.keepAlive" :class="{'app-hidden': chgKeepAlive === 'nk'}"></router-view>
+          <router-view name="main"></router-view>
         </keep-alive>
-      </transition>
 
-      <tabber :select="select" v-show="$route.meta.keepAlive" >
-      </tabber>
+        <tabber :select="select">
+        </tabber>
+      </div>
 
       <transition name="fade" mode="out-in" >
-        <router-view v-if="!$route.meta.keepAlive" :class="{'app-hidden': chgKeepAlive === 'k'}"></router-view>
+        <router-view  name="default" class="app-sub-page"></router-view>
       </transition>
     </div>
   </div>
@@ -33,6 +33,11 @@ export default {
   created () {
   },
   watch: {
+    $route (to, from) {
+      if (to.meta && to.meta.tab && this.select !== to.meta.tab) {
+        this.select = to.meta.tab
+      }
+    }
   },
   computed: {
     ...mapGetters(['chgKeepAlive'])
@@ -56,5 +61,26 @@ export default {
 
   .app-hidden {
     display: none;
+  }
+  .app-sub-page {
+    position: absolute;
+    top: 0px;
+    /*bottom: 0px;*/
+    background: #eee;
+    /*height: 100%;*/
+    width: 100%;
+    min-height: 100%;
+    /* overflow: hidden; */
+    right: 0;
+    left: 0;
+    z-index: 150;
+  }
+  .app-main {
+    transition: 0.5s;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: #efeff4;
   }
 </style>
