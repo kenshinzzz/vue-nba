@@ -1,0 +1,22 @@
+{
+  "scope": "/",
+  "name": "That is why we play",
+  "short_name": "NBA",
+  "start_url": "/nba/#/index",
+  "display": "standalone",
+  "description": "That is why we play",
+  "orientation": "portrait",
+  "theme_color": "#3f51b5",
+  "background_color": "#fff",
+  "icons": [{
+    "src": "./logo32.png",
+    "sizes": "32x32",
+    "type": "image/png"
+  },
+    {
+      "src": "./logo144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}

@@ -8,7 +8,6 @@ module.exports = {
   "plugins": [
     "transform-runtime",
     ["component", [
-      { "libraryName": "mint-ui", "style": true },
       { "libraryName": "vux", "style": true }
     ]]
   ],
