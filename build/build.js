@@ -14,18 +14,17 @@ const spinner = ora('building for production...')
 spinner.start()
 
 function runpack () {
-  var entryname = 'nba';
-  var conf = webpackConfig.getWebpackConfig('nba', {nba: './src/nba/main.js'}, false, true);
+  var conf = webpackConfig
     webpack(conf, function (err, stats) {
       if (err) throw err
       process.stdout.write(stats.toString({
           colors: true,
-          modules: true,
+          modules: false,
           children: false,
           chunks: false,
           chunkModules: false,
-          timings: true,
-          builtAt: true
+          // timings: true,
+          // builtAt: true
         }) + '\n\n')
 
       if (stats.hasErrors()) {

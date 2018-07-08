@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from './store/index'
-import * as index from './index/router'
+import * as index from './route/router'
 
 let routes = []
 const registerRoute = (config) => {

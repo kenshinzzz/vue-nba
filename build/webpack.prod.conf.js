@@ -10,40 +10,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin')
-const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
+
+// 要配置ExtractTextPlugin，已解决打包问题，但是还有一个不关闭问题
+const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin')
+
+// pwa插件
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 
 const env = require('../config/prod.env')
 
-/**
- *
- * @param en  打包模块名称
- * @param pat 打包入口
- * @param t 是否有模板文件
- * @param copy 是否需要拷贝
- * @returns {*}
- */
-exports.getWebpackConfig = function (en, pat, t, copy) {
-  var multi = Object.keys(pat).length > 1
-  var HtmlPlugin = [];
-  Object.keys(pat).forEach(function (name) {
-    HtmlPlugin.push(new HtmlWebpackPlugin({
-      filename: process.env.NODE_ENV === 'testing'
-        ? 'index.html'
-        : config.build.assetsRoot + '/' + name + '/index.html',
-      template: t ? 'src/' + en + '/index.html' : 'index.html',
-      inject: true,
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true
-      },
-      chunksSortMode: 'dependency',
-      chunks: [name]
-    }))
-  })
-  var bwc = baseWebpackConfig.baseWebpackConfig(pat);
-  delete bwc.resolve.alias['vue'] // 需要删除，否则common包会重复打包vue
-  const webpackConfig = merge(bwc, {
+
+delete baseWebpackConfig.resolve.alias['vue'] // 需要删除，否则common包会重复打包vue
+  const webpackConfig = merge(baseWebpackConfig, {
     module: {
       rules: utils.styleLoaders({
         sourceMap: config.build.productionSourceMap,
@@ -53,8 +31,8 @@ exports.getWebpackConfig = function (en, pat, t, copy) {
     },
     devtool: config.build.productionSourceMap ? config.build.devtool : false,
     output: {
-      path: config.build.assetsRoot + '/' + en,
-      publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath + en + '/' : config.dev.assetsPublicPath,
+      path: config.build.assetsRoot,
+      publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
       filename: utils.assetsPath('js/[name].[chunkhash].js'),
       chunkFilename: utils.assetsPath('js/[name].[chunkhash].js')
     },
@@ -80,14 +58,33 @@ exports.getWebpackConfig = function (en, pat, t, copy) {
         // This will result in *all* of your app's CSS being loaded upfront.
         allChunks: false,
       }),
+      new SkeletonWebpackPlugin({
+        webpackConfig: require('./webpack.skeleton.conf'),
+        quiet: true
+      }),
       // Compress extracted CSS. We are using this plugin so that possible
       // duplicated CSS from different components can be deduped.
       new OptimizeCSSPlugin({
         cssProcessorOptions: config.build.productionSourceMap
           ? {safe: true, map: {inline: false}}
           : {safe: true}
+      }),
+
+      new HtmlWebpackPlugin({
+        filename: process.env.NODE_ENV === 'testing'
+          ? 'index.html'
+          : config.build.assetsRoot + '/index.html',
+        template: 'index.html',
+        inject: true,
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeAttributeQuotes: true
+        },
+        chunksSortMode: 'dependency',
+        chunks: ['nba']
       })
-    ].concat(HtmlPlugin).concat([
+    ].concat([
       // keep module.id stable when vender modules does not change
       new webpack.HashedModuleIdsPlugin(),
       // enable scope hoisting
@@ -109,15 +106,16 @@ exports.getWebpackConfig = function (en, pat, t, copy) {
         minChunks: 3,
       }),
       new InlineManifestWebpackPlugin(),
-      new HtmlWebpackIncludeAssetsPlugin({
-        assets: ['vue.dll.js'], //
-        append: false,
-        publicPath: '/res/static/'
+      new SWPrecacheWebpackPlugin({
+        cacheId: 'vue-nba-app',
+        filename: 'service-worker.js',
+        staticFileGlobs: ['dist/**/*.{js,html,css}'],
+        minify: true,
+        stripPrefix: 'dist' // 用于replace  staticFileGlobs中的文件前缀
       })
     ])
   })
 
-  if (copy) {
     webpackConfig.plugins.push(
       // copy custom static assets
       new CopyWebpackPlugin([
@@ -128,7 +126,6 @@ exports.getWebpackConfig = function (en, pat, t, copy) {
         }
       ])
     )
-  }
 
   if (config.build.productionGzip) {
     const CompressionWebpackPlugin = require('compression-webpack-plugin')
@@ -148,12 +145,10 @@ exports.getWebpackConfig = function (en, pat, t, copy) {
     )
   }
 
-  if (config.build.bundleAnalyzerReport && copy) {
+  if (config.build.bundleAnalyzerReport) {
     const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
     webpackConfig.plugins.push(new BundleAnalyzerPlugin())
   }
 
-  return webpackConfig
-}
 
-// module.exports = webpackConfig
+module.exports = webpackConfig

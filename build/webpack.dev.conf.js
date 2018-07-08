@@ -3,25 +3,16 @@ const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
 const merge = require('webpack-merge')
-const baseWebpackConfigs = require('./webpack.base.conf')
+const baseWebpackConfig = require('./webpack.base.conf')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const InlineManifestWebpackPlugin = require('inline-manifest-webpack-plugin')
+
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin')  // 要配置ExtractTextPlugin，但是有报错不能用。
 
 const portfinder = require('portfinder')
 const express = require('express')
 const path = require('path')
-
-var HtmlPlugin = [];
-var entries = {nba: './src/nba/main.js'};
-var baseWebpackConfig = baseWebpackConfigs.baseWebpackConfig(entries);
-Object.keys(baseWebpackConfig.entry).forEach(function (name) {
-    HtmlPlugin.push(new HtmlWebpackPlugin({
-        filename: name + '/index.html',
-        template: 'index.html',
-        inject: true,
-        chunks: [name]
-    }))
-})
 
 const devWebpackConfig = merge(baseWebpackConfig, {
     module: {
@@ -79,13 +70,14 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
     new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
-    /*new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
-    }),
-    new FriendlyErrorsPlugin()*/
-  ].concat(HtmlPlugin).concat(
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: 'index.html',
+        inject: true,
+        chunks: ['nba']
+      })
+    /*new FriendlyErrorsPlugin()*/
+  ].concat([
       new webpack.HashedModuleIdsPlugin(),
       // new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.optimize.CommonsChunkPlugin({
@@ -98,8 +90,25 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         children: true,
         minChunks: 3,
       }),
-      new InlineManifestWebpackPlugin()
-    ) //.concat([new FriendlyErrorsPlugin()])
+      new InlineManifestWebpackPlugin(),
+      new ExtractTextPlugin({
+        filename: utils.assetsPath('css/[name].css')
+      }),
+      new SkeletonWebpackPlugin({
+        webpackConfig: require('./webpack.skeleton.conf'),
+        quiet: true,
+        minimize: true,
+        router: {
+          mode: 'hash',
+          routes: [
+            {
+              path: '/index',
+              skeletonId: 'skeleton'
+            }
+          ]
+        }
+      }),
+    ]) //.concat([new FriendlyErrorsPlugin()])
 })
 
 

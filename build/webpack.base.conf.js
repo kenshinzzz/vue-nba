@@ -9,10 +9,11 @@ function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
-exports.baseWebpackConfig = function (entries) {
-  let webpackConfig = {
+let webpackConfig = {
     context: path.resolve(__dirname, '../'),
-    entry: entries,
+    entry: {
+      nba: './src/nba/main.js'
+    },
     output: {
       path: config.build.assetsRoot,
       filename: '[name].js',
@@ -60,7 +61,7 @@ exports.baseWebpackConfig = function (entries) {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            name: utils.assetsPath('../../res/static/images/[name].[hash:7].[ext]')
+            name: utils.assetsPath('../res/static/images/[name].[hash:7].[ext]')
           }
         },
         {
@@ -68,7 +69,7 @@ exports.baseWebpackConfig = function (entries) {
           loader: 'url-loader',
           options: {
             limit: 10000,
-            name: utils.assetsPath('../../res/static/media/[name].[hash:7].[ext]')
+            name: utils.assetsPath('../res/static/media/[name].[hash:7].[ext]')
           }
         },
         {
@@ -83,7 +84,7 @@ exports.baseWebpackConfig = function (entries) {
     }
   }
 
-  return vuxLoader.merge(webpackConfig, {
+const baseWebpackConfig = vuxLoader.merge(webpackConfig, {
     options: {},
     plugins: [
       {
@@ -91,4 +92,6 @@ exports.baseWebpackConfig = function (entries) {
       }
     ]
   })
-}
+
+
+module.exports = baseWebpackConfig

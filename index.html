@@ -4,10 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="/res/static/manifest.json">
   <title>That is why we play</title>
   <%= htmlWebpackPlugin.files.webpackManifest %>
 </head>
 <body>
+<!-- 注册service-worker.js -->
+<script>
+  (function() {
+    if('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  })();
+</script>
 <div id="app">
 </div>
 <!-- built files will be auto injected -->
