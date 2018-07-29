@@ -8,17 +8,22 @@ import store from '../store'
  * Get info of game general
  */
 const getGameGeneral = (year, month, date) => {
-  return new Promise((resolve, reject) => {
-    channel.getGameGeneral(year, month, date)
-      .then(data => {
-        if (data) {
-          store.dispatch(GAME.INFO, data)
-          resolve()
-        } else {
-          reject()
-        }
-      })
-  })
+  let url = window.location.href
+  if (url.indexOf('/index') > 0) {
+    return new Promise((resolve, reject) => {
+      channel.getGameGeneral(year, month, date)
+        .then(data => {
+          if (data) {
+            store.dispatch(GAME.INFO, data)
+            resolve()
+          } else {
+            reject()
+          }
+        })
+    })
+  } else {
+    return new Promise().resolve()
+  }
 }
 
 /**
@@ -55,7 +60,7 @@ const getLeagueStanding = () => {
   const d = new Date()
   const currentMonth = d.getMonth() + 1
   let year
-  if (currentMonth >= 10) {
+  if (currentMonth >= 7) {
     year = d.getFullYear().toString()
   } else {
     year = d.getFullYear().toString() - 1

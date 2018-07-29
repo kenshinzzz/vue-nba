@@ -32,8 +32,6 @@
    name: 'game-panel',
    data () {
      return {
-       gameProcess: '',
-       cssType: '',
        teamMapHome: {},
        teamMapVisitor: {}
      }
@@ -48,25 +46,30 @@
      let visitorAbb = this.game.visitor.team.toLowerCase()
      this.teamMapHome = teamMap[homeAbb]
      this.teamMapVisitor = teamMap[visitorAbb]
-
-     this.gameProcess = ''
-     this.cssType = ''
-     switch (this.game.type) {
-       case 'unstart':
-         this.gameProcess = this.game.date.replace(/\s*ET\s*/, '')
-         this.cssType = 'Unstart'
-         break
-       case 'live':
-         this.gameProcess += this.game.process.quarter + ' '
-         this.gameProcess += this.game.process.time.replace(/\s+/, '')
-         this.cssType = 'Live'
-         break
-       case 'over':
-         this.gameProcess = 'Final'
-         this.cssType = 'Over'
-         break
-       default:
-         return
+   },
+   computed: {
+     gameProcess () {
+       switch (this.game.type) {
+         case 'unstart':
+           return this.game.date.replace(/\s*ET\s*/, '')
+         case 'live':
+           return this.game.process.quarter + ' ' + this.game.process.time.replace(/\s+/, '')
+         case 'over':
+           return 'Final'
+         default:
+       }
+       return ''
+     },
+     cssType () {
+       switch (this.game.type) {
+         case 'unstart':
+           return 'Unstart'
+         case 'live':
+           return 'Live'
+         case 'over':
+           return 'Over'
+       }
+       return ''
      }
    },
    mounted () {
